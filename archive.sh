@@ -35,7 +35,7 @@ ARCHIVE_TO=$(printf %s "$FOLDER_NAME" "T23:59:59.999Z")
 dav_mkdir "$FOLDER_NAME"
 
 # query boxes from database
-BOXES_RAW=$(mongoexport --host db --db OSeM-api -c boxes --quiet --jsonArray -f sensors)
+BOXES_RAW=$(mongo_export -c boxes --jsonArray -f sensors)
 
 # extract just the ids from $BOXES_RAW then
 echo "$BOXES_RAW" | jq -r '.[]._id | .["$oid"]' | while read -r boxid ; do
@@ -43,8 +43,7 @@ echo "$BOXES_RAW" | jq -r '.[]._id | .["$oid"]' | while read -r boxid ; do
   dav_mkdir "$FOLDER_NAME/$boxid"
   # iterate over sensor ids
   echo "$BOXES_RAW" | jq -r ".[] | select((._id | .[\"\$oid\"])==\"$boxid\") | .sensors[]._id | .[\"\$oid\"]" | while read -r sensor_id ; do
-    #dav_mkdir "$FOLDER_NAME/$boxid/$sensor_id"
-    mongoexport --host db --db OSeM-api -c measurements --quiet --fields createdAt,value --type csv --query "{sensor_id: ObjectId(\"$sensor_id\"), createdAt: { \$gte: new Date(\"$ARCHIVE_FROM\"), \$lte: new Date(\"$ARCHIVE_TO\") } }" | dav_upload "$FOLDER_NAME/$boxid/$sensor_id.csv"
+    mongo_export -c measurements --fields createdAt,value --type csv --query "{sensor_id: ObjectId(\"$sensor_id\"), createdAt: { \$gte: new Date(\"$ARCHIVE_FROM\"), \$lte: new Date(\"$ARCHIVE_TO\") } }" | dav_upload "$FOLDER_NAME/$boxid/$sensor_id.csv"
   done
 done
 

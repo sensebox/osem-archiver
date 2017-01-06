@@ -20,3 +20,7 @@ dav_upload () {
     curl --user "$DAV_USER:$DAV_PASS" "$DAV_URL/$ARCHIVE_FOLDER/$1" -XPUT --upload-file -
   fi
 }
+
+mongo_export () {
+  mongoexport -h "$MONGO_HOST" -d "$MONGO_DB" -u "$MONGO_USER" -p "$MONGO_PASS" --quiet "$@"
+}
