@@ -8,8 +8,8 @@ dav_mkdir () {
   then
     echo "-dav_mkdir: Parameter #1 is zero length.-"
   else
-    echo "Creating folder $1 .."
-    curl --fail --user "$DAV_USER:$DAV_PASS" "$DAV_URL/$ARCHIVE_FOLDER/$1" -XMKCOL
+    echo "Creating folder $ARCHIVE_FOLDER/$1 .."
+    curl --fail --user "$DAV_USER:$DAV_PASS" "$DAV_URL/$ARCHIVE_FOLDER/$1" -XMKCOL || ( echo "Creating folder $DAV_URL/$ARCHIVE_FOLDER/$1 failed" && exit 1)
   fi
 }
 
@@ -18,8 +18,8 @@ dav_upload () {
   then
     echo "-dav_upload: Parameter #1 is zero length.-"
   else
-    echo "Uploading file $1 .."
-    curl --fail --user "$DAV_USER:$DAV_PASS" "$DAV_URL/$ARCHIVE_FOLDER/$1" -XPUT --upload-file -
+    echo "Uploading file $ARCHIVE_FOLDER/$1 .."
+    curl --fail --user "$DAV_USER:$DAV_PASS" "$DAV_URL/$ARCHIVE_FOLDER/$1" -XPUT --upload-file - || ( echo "uploading file $DAV_URL/$ARCHIVE_FOLDER/$1 failed" && exit 1)
   fi
 }
 
