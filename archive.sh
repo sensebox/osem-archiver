@@ -7,19 +7,27 @@ IFS=$'\n\t'
 source config
 source helpers.sh
 
-while getopts ":-date" opt; do
+# set date to backup
+BACKUP_DATE='yesterday'
+
+while getopts ":d:" opt; do
   case $opt in
-    a)
-      echo "-a was triggered!" >&2
+    d)
+      echo "Setting date to: $OPTARG" >&2
+      BACKUP_DATE="$OPTARG"
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
       ;;
   esac
 done
 
 # set up some date strings
-FOLDER_NAME=$(date -u --date 'yesterday' +%F)
+FOLDER_NAME=$(date -u --date "$BACKUP_DATE" +%F)
 ARCHIVE_FROM=$(printf %s "$FOLDER_NAME" "T00:00:00.000Z")
 ARCHIVE_TO=$(printf %s "$FOLDER_NAME" "T23:59:59.999Z")
 
