@@ -42,15 +42,27 @@ echo "$BOXES_RAW" | jq_boxids | while read -r boxid ; do
   # extract box name (id-name) from $BOXES_RAW
   BOX_NAME=$(echo "$BOXES_RAW" | jq_box_name "$boxid")
 
-  # create folder for this box
-  dav_mkdir "$FOLDER_NAME/$BOX_NAME"
-
-  # create json file with box information
-  echo "$BOXES_RAW" | jq_box_json "$boxid" | dav_upload "$FOLDER_NAME/$BOX_NAME/$BOX_NAME.json"
+  FOLDER_CREATED=false
 
   # iterate over sensor ids
   echo "$BOXES_RAW" | jq_box_sensorids "$boxid" | while read -r sensor_id ; do
-    mongo_export_measurements "$sensor_id" | dav_upload "$FOLDER_NAME/$BOX_NAME/$sensor_id.csv"
+    # check if this sensor has measurements
+    if [ "$(mongo_export_measurements "$sensor_id" --limit 1 | wc -l)" -eq 2 ]
+    then
+      # check if folder is created
+      if [ "$FOLDER_CREATED" = false ]
+      then
+        # create folder for this box
+        dav_mkdir "$FOLDER_NAME/$BOX_NAME"
+
+        # create json file with box information
+        echo "$BOXES_RAW" | jq_box_json "$boxid" | dav_upload "$FOLDER_NAME/$BOX_NAME/$BOX_NAME.json"
+        FOLDER_CREATED=true
+      fi
+
+      # data is avaliable. upload it
+      mongo_export_measurements "$sensor_id" | dav_upload "$FOLDER_NAME/$BOX_NAME/$sensor_id.csv"
+    fi
   done
 done
 
