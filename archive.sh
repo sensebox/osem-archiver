@@ -50,7 +50,7 @@ echo "$BOXES_RAW" | jq_boxids | while read -r boxid ; do
 
   # iterate over sensor ids
   echo "$BOXES_RAW" | jq_box_sensorids "$boxid" | while read -r sensor_id ; do
-    mongo_export -c measurements --fields createdAt,value --type csv --query "{sensor_id: ObjectId(\"$sensor_id\"), createdAt: { \$gte: new Date(\"$ARCHIVE_FROM\"), \$lte: new Date(\"$ARCHIVE_TO\") } }" | dav_upload "$FOLDER_NAME/$BOX_NAME/$sensor_id.csv"
+    mongo_export_measurements "$sensor_id" | dav_upload "$FOLDER_NAME/$BOX_NAME/$sensor_id.csv"
   done
 done
 

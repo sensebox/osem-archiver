@@ -27,6 +27,15 @@ mongo_export () {
   mongoexport -h "$MONGO_HOST" -d "$MONGO_DB" -u "$MONGO_USER" -p "$MONGO_PASS" --quiet "$@"
 }
 
+mongo_export_measurements () {
+  if [ -z "$1" ]
+  then
+    echo "-mongo_export_measurements: Parameter #1 is zero length.-"
+  else
+    mongo_export -c measurements --fields createdAt,value --type csv --query "{sensor_id: ObjectId(\"$1\"), createdAt: { \$gte: new Date(\"$ARCHIVE_FROM\"), \$lte: new Date(\"$ARCHIVE_TO\") } }" --sort '{createdAt:1}' "${@:2}"
+  fi
+}
+
 jq_boxids () {
   jq -r '.[]._id | .["$oid"]'
 }
