@@ -31,6 +31,8 @@ FOLDER_NAME=$(date -u --date "$BACKUP_DATE" +%F)
 ARCHIVE_FROM=$(printf %s "$FOLDER_NAME" "T00:00:00.000Z")
 ARCHIVE_TO=$(printf %s "$FOLDER_NAME" "T23:59:59.999Z")
 
+echo "Going to backup data from $ARCHIVE_FROM until $ARCHIVE_TO"
+
 # create base folder on the server
 dav_mkdir "$FOLDER_NAME"
 
