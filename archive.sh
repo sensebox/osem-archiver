@@ -58,12 +58,12 @@ echo "$BOXES_RAW" | jq_boxids | while read -r boxid ; do
         dav_mkdir "$FOLDER_NAME/$BOX_NAME"
 
         # create json file with box information
-        echo "$BOXES_RAW" | jq_box_json "$boxid" | dav_upload "$FOLDER_NAME/$BOX_NAME/$BOX_NAME.json"
+        echo "$BOXES_RAW" | jq_box_json "$boxid" | dav_upload "$FOLDER_NAME/$BOX_NAME/$BOX_NAME-$FOLDER_NAME.json"
         FOLDER_CREATED=true
       fi
 
       # data is avaliable. upload it
-      mongo_export_measurements "$sensor_id" | dav_upload "$FOLDER_NAME/$BOX_NAME/$sensor_id.csv"
+      mongo_export_measurements "$sensor_id" | dav_upload "$FOLDER_NAME/$BOX_NAME/$sensor_id-$FOLDER_NAME.csv"
     fi
   done
 done
