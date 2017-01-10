@@ -4,12 +4,18 @@ FROM debian:stretch-slim
 RUN apt-get update && apt-get install -y \
   mongo-tools=3.2.* \
   curl=7.51.* \
-  jq=1.5+dfsg-1.1 \
+  jq=1.5* \
   && rm -rf /var/lib/apt/lists/*
+
+# install go-cron
+RUN curl -L https://github.com/odise/go-cron/releases/download/v0.0.7/go-cron-linux.gz \
+  | zcat > /usr/local/bin/go-cron \
+  && chmod u+x /usr/local/bin/go-cron
 
 RUN mkdir /osem-archiver
 WORKDIR /osem-archiver
 
-COPY . /osem-archiver
+COPY helpers.sh archive.sh cron-wrapper.sh /osem-archiver/
 
-ENTRYPOINT ["./archive.sh"]
+# schedule for 02:30:00 UTC each day
+CMD go-cron -p "0" -s "0 30 2 * * *" -- /osem-archiver/cron-wrapper.sh /osem-archiver/archive.sh

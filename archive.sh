@@ -4,7 +4,6 @@ set -euo pipefail
 IFS=$'\n\t'
 
 #include config and helper functions
-source config
 source helpers.sh
 
 # set date to backup
