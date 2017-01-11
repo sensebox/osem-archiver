@@ -32,8 +32,7 @@ ARCHIVE_TO=$(printf %s "$FOLDER_NAME" "T23:59:59.999Z")
 
 echo "Going to backup data from $ARCHIVE_FROM until $ARCHIVE_TO"
 
-# create base folder on the server
-dav_mkdir "$FOLDER_NAME"
+BASE_FOLDER_CREATED=false
 
 # query boxes from database
 BOXES_RAW=$(mongo_export -c boxes --jsonArray -f sensors,name,boxType,exposure,model,loc)
@@ -43,22 +42,30 @@ echo "$BOXES_RAW" | jq_boxids | while read -r boxid ; do
   # extract box name (id-name) from $BOXES_RAW
   BOX_NAME=$(echo "$BOXES_RAW" | jq_box_name "$boxid")
 
-  FOLDER_CREATED=false
+  BOX_FOLDER_CREATED=false
 
   # iterate over sensor ids
   echo "$BOXES_RAW" | jq_box_sensorids "$boxid" | while read -r sensor_id ; do
     # check if this sensor has measurements
     if [ "$(mongo_export_measurements "$sensor_id" --limit 1 | wc -l)" -eq 2 ]
     then
+      # check if base folder is already created
+      if [ "$BASE_FOLDER_CREATED" = false ]
+      then
+        # create base folder on the server
+        dav_mkdir "$FOLDER_NAME"
+        BASE_FOLDER_CREATED=true
+      fi
+
       # check if folder is created
-      if [ "$FOLDER_CREATED" = false ]
+      if [ "$BOX_FOLDER_CREATED" = false ]
       then
         # create folder for this box
         dav_mkdir "$FOLDER_NAME/$BOX_NAME"
 
         # create json file with box information
         echo "$BOXES_RAW" | jq_box_json "$boxid" | dav_upload "$FOLDER_NAME/$BOX_NAME/$BOX_NAME-$FOLDER_NAME.json"
-        FOLDER_CREATED=true
+        BOX_FOLDER_CREATED=true
       fi
 
       # data is avaliable. upload it
