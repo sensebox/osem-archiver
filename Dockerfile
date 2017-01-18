@@ -5,6 +5,8 @@ RUN apt-get update && apt-get install -y \
   mongo-tools=3.2.* \
   curl=7.51.* \
   jq=1.5* \
+  xsltproc=1.1.29* \
+  git=1:2.11.0* \
   && rm -rf /var/lib/apt/lists/*
 
 # install go-cron
