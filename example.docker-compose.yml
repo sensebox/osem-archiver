@@ -13,3 +13,8 @@ services:
       MONGO_PASS: <Password of your MongoDB user>
       MONGO_DB: <The database from which you want to pull the data>
       MONGO_HOST: <The host running MongoDB>
+      DAV_PUBLIC_URL: <The public URL of the webdav share>
+      DAV_PUBLIC_USER: <The user of the public webdav share>
+      GIT_BRANCH: <The branch where you want to push>
+      GITHUB_ACCESS_TOKEN: <Github access token>
+      GITHUB_REPO: <github repo username/reponame>

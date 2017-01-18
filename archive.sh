@@ -76,3 +76,5 @@ while read -r boxid ; do
   done <<< "$SENSOR_IDS"
 done <<< "$BOXES_IDS"
 
+# make index
+./build-index.sh -d "$FOLDER_NAME"
