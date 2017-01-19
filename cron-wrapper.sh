@@ -9,7 +9,7 @@ IFS=$'\n\t'
 notify_slack () {
   if [ -n "$SLACK_HOOK_URL" ]
   then
-    escapedText=$(echo "$1" | sed 's/"/\"/g' | sed "s/'/\'/g" )
+    escapedText=$(echo "$1" | sed 's/"/\"/g' | sed "s/'/\'/g" | sed "s/${GITHUB_ACCESS_TOKEN}//g" )
     json="{\"text\": \"Error while running archive script: \`$escapedText\`\"}"
 
     curl -s -d "payload=$json" "$SLACK_HOOK_URL"
