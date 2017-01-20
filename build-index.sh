@@ -9,7 +9,6 @@ BACKUP_DATE=''
 while getopts ":d:" opt; do
   case $opt in
     d)
-      echo "Setting date to: $OPTARG" >&2
       BACKUP_DATE="$OPTARG"
       ;;
     \?)
