@@ -2,6 +2,8 @@
 
 This is the archive script of archive.opensensemap.org. It uses mongoexport, jq and curl to back up the data to sciebo.
 
+> ℹ️ This repository is the **old** openSenseMap archiver and is deprecated and archived. New archiver can be found here: <https://github.com/sensebox/openSenseMap-archive>
+
 ### Usage
 
 The best way to start and schedule daily archiving is to start a docker container from this with the following environment variables set:
@@ -15,4 +17,3 @@ The best way to start and schedule daily archiving is to start a docker containe
 - `MONGO_PASS` Password of your MongoDB user
 - `MONGO_DB` The database from which you want to pull the data
 - `MONGO_HOST` The host running MongoDB
-
